@@ -10,7 +10,7 @@ describe('Genotype class', () => {
     maxValue,
     maxWeight,
   });
-  let genotype;
+  let genotype: Genotype;
 
   beforeEach(() => {
     genotype = new Genotype(randomElements);
@@ -21,7 +21,7 @@ describe('Genotype class', () => {
   });
 
   it('should create random genotype', () => {
-    genotype.createRandomGenotype();
+    genotype.createRandomGenes();
     expect(genotype.genes.length).toBe(howMany);
     genotype.genes.forEach((gene) => {
       expect(gene).toBeGreaterThanOrEqual(0);

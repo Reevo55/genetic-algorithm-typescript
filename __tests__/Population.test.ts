@@ -23,7 +23,7 @@ describe('Population class', () => {
     ],
   };
 
-  let population;
+  let population: Population;
 
   beforeEach(() => {
     population = new Population(populationSettings, problemSettings);
