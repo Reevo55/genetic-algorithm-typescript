@@ -14,9 +14,15 @@ export interface IProblemSettings {
   elements: IElement[];
 }
 
+export interface IEvolveSettings {
+  selectionStrategy: 'roulette' | 'tournament';
+  crossoverStrategy: 'onePoint' | 'twoPoint' | 'uniform';
+  mutationStrategy: 'random' | 'swap';
+}
+
 export class Population {
   population: Genotype[];
-  generations: Genotype[];
+  generations: Genotype[][];
   populationSettings: IPopulationSettings;
   problemSettings: IProblemSettings;
 
@@ -43,5 +49,23 @@ export class Population {
         return genotype;
       },
     );
+  }
+
+  public getFittest(): Genotype {
+    return this.population.reduce((prev, current) =>
+      prev.calculateFitness() > current.calculateFitness() ? prev : current,
+    );
+  }
+
+  public evolve(settings: IEvolveSettings): void {
+    this.generations = [];
+    this.numberOfGenerations = 0;
+    this.finished = false;
+
+    this.createRandomPopulation();
+
+    while (!this.finished) {
+      this.numberOfGenerations++;
+    }
   }
 }
