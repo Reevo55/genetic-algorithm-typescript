@@ -8,7 +8,7 @@ export interface IMutationStrategy {
 export class RandomMutationStrategy implements IMutationStrategy {
   public mutate(population: Population): void {
     population.population.forEach((genotype) => {
-      genotype.genes.forEach((gene, index) => {
+      genotype.genes.forEach((_, index) => {
         if (Math.random() < population.populationSettings.mutationRate) {
           genotype.genes[index] = Math.round(Math.random()) as Gene;
         }

@@ -16,11 +16,11 @@ export class OnePointCrossoverStrategy implements ICrossoverStrategy {
       const crossoverPoint = Math.floor(Math.random() * parent1.genes.length);
 
       const child1 = new Genotype(parent1.elements, {
-        maxWeightCapacity: population.problemSettings.maxWeightCapacity,
+        ...population.problemSettings,
       });
 
       const child2 = new Genotype(parent2.elements, {
-        maxWeightCapacity: population.problemSettings.maxWeightCapacity,
+        ...population.problemSettings,
       });
 
       child1.setGenes([

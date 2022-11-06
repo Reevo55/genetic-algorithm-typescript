@@ -1,9 +1,11 @@
+import { BasicFitness, FitnessStrategy } from './evolve-settings/Fitness.js';
 import { IElement } from './IElement.js';
 
 export type Gene = 0 | 1;
 
 export interface ISettings {
   maxWeightCapacity: number;
+  fitnessStrategy: FitnessStrategy;
 }
 
 export class Genotype {
@@ -11,6 +13,7 @@ export class Genotype {
   elements: IElement[];
   settings: ISettings = {
     maxWeightCapacity: 10,
+    fitnessStrategy: new BasicFitness(),
   };
 
   constructor(elements: IElement[], settings?: ISettings) {
@@ -22,14 +25,7 @@ export class Genotype {
   }
 
   public calculateFitness(): number {
-    const weight = this.calculateWeight();
-    const value = this.calculateValue();
-
-    if (weight > this.settings.maxWeightCapacity) {
-      return 0;
-    }
-
-    return value;
+    return this.settings.fitnessStrategy.calculate(this);
   }
 
   public createRandomGenes(): void {

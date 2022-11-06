@@ -1,3 +1,4 @@
+import { FitnessStrategy } from './evolve-settings/Fitness.js';
 import { Genotype } from './Genotype.js';
 import { IElement } from './IElement.js';
 
@@ -11,6 +12,7 @@ export interface IPopulationSettings {
 
 export interface IProblemSettings {
   maxWeightCapacity: number;
+  fitnessStrategy: FitnessStrategy;
   elements: IElement[];
 }
 
@@ -43,6 +45,7 @@ export class Population {
       () => {
         const genotype = new Genotype(this.problemSettings.elements, {
           maxWeightCapacity: this.problemSettings.maxWeightCapacity,
+          fitnessStrategy: this.problemSettings.fitnessStrategy,
         });
 
         genotype.createRandomGenes();

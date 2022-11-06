@@ -1,7 +1,12 @@
-import { Population } from '../src/Population.js';
+import { BasicFitness } from '../src/evolve-settings/Fitness.js';
+import {
+  IPopulationSettings,
+  IProblemSettings,
+  Population,
+} from '../src/Population.js';
 
 describe('Population class', () => {
-  const populationSettings = {
+  const populationSettings: IPopulationSettings = {
     populationSize: 10,
     mutationRate: 0.1,
     crossoverRate: 0.7,
@@ -9,8 +14,9 @@ describe('Population class', () => {
     tournamentSize: 5,
   };
 
-  const problemSettings = {
+  const problemSettings: IProblemSettings = {
     maxWeightCapacity: 15,
+    fitnessStrategy: new BasicFitness(),
     elements: [
       {
         value: 1,
