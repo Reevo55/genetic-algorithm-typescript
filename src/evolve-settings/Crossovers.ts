@@ -1,41 +1,27 @@
 import { Genotype } from '../Genotype.js';
-import { Population } from '../Population.js';
 
 export interface ICrossoverStrategy {
-  crossover(population: Population): void;
+  crossover(parent1: Genotype, parent2: Genotype): [Genotype, Genotype];
 }
 
 export class OnePointCrossoverStrategy implements ICrossoverStrategy {
-  public crossover(population: Population): void {
-    const newPopulation = population.population.slice();
+  public crossover(parent1: Genotype, parent2: Genotype): [Genotype, Genotype] {
+    const crossoverPoint = Math.floor(Math.random() * parent1.genes.length);
 
-    for (let i = 0; i < population.population.length; i += 2) {
-      const parent1 = population.population[i];
-      const parent2 = population.population[i + 1];
+    const child1 = new Genotype(parent1.elements, parent1.settings);
 
-      const crossoverPoint = Math.floor(Math.random() * parent1.genes.length);
+    const child2 = new Genotype(parent2.elements, parent2.settings);
 
-      const child1 = new Genotype(parent1.elements, {
-        ...population.problemSettings,
-      });
+    child1.setGenes([
+      ...parent1.genes.slice(0, crossoverPoint),
+      ...parent2.genes.slice(crossoverPoint),
+    ]);
 
-      const child2 = new Genotype(parent2.elements, {
-        ...population.problemSettings,
-      });
+    child2.setGenes([
+      ...parent2.genes.slice(0, crossoverPoint),
+      ...parent1.genes.slice(crossoverPoint),
+    ]);
 
-      child1.setGenes([
-        ...parent1.genes.slice(0, crossoverPoint),
-        ...parent2.genes.slice(crossoverPoint),
-      ]);
-
-      child2.setGenes([
-        ...parent2.genes.slice(0, crossoverPoint),
-        ...parent1.genes.slice(crossoverPoint),
-      ]);
-
-      newPopulation.push(child1, child2);
-    }
-
-    population.population = newPopulation;
+    return [child1, child2];
   }
 }

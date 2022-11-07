@@ -1,17 +1,17 @@
-import { BasicFitness, FitnessStrategy } from './evolve-settings/Fitness.js';
+import { BasicFitness, IFitnessStrategy } from './evolve-settings/Fitness.js';
 import { IElement } from './IElement.js';
 
 export type Gene = 0 | 1;
 
 export interface ISettings {
   maxWeightCapacity: number;
-  fitnessStrategy: FitnessStrategy;
+  fitnessStrategy: IFitnessStrategy;
 }
 
 export class Genotype {
   genes: Gene[];
   elements: IElement[];
-  settings: ISettings = {
+  public settings: ISettings = {
     maxWeightCapacity: 10,
     fitnessStrategy: new BasicFitness(),
   };

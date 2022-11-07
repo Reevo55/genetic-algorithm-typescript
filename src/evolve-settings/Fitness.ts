@@ -1,10 +1,10 @@
 import { Genotype } from '../Genotype.js';
 
-export interface FitnessStrategy {
+export interface IFitnessStrategy {
   calculate(gene: Genotype): number;
 }
 
-export class BasicFitness implements FitnessStrategy {
+export class BasicFitness implements IFitnessStrategy {
   calculate(gene: Genotype): number {
     const weight = gene.calculateWeight();
     const value = gene.calculateValue();

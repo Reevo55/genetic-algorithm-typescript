@@ -1,6 +1,7 @@
 export interface IElement {
   value: number;
   weight: number;
+  name?: string;
 }
 
 export function createRandomElements(

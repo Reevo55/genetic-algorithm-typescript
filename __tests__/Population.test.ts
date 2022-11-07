@@ -16,7 +16,6 @@ describe('Population class', () => {
 
   const problemSettings: IProblemSettings = {
     maxWeightCapacity: 15,
-    fitnessStrategy: new BasicFitness(),
     elements: [
       {
         value: 1,
@@ -36,7 +35,7 @@ describe('Population class', () => {
   });
 
   it('should create random population', () => {
-    population.createRandomPopulation();
+    population.createRandomPopulation(new BasicFitness());
 
     expect(population.population.length).toBe(
       populationSettings.populationSize,

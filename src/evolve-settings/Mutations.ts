@@ -1,18 +1,20 @@
-import { Gene } from '../Genotype.js';
-import { Population } from '../Population.js';
+import { Genotype } from '../Genotype.js';
 
 export interface IMutationStrategy {
-  mutate(population: Population): void;
+  mutate(child: Genotype): Genotype;
 }
 
 export class RandomMutationStrategy implements IMutationStrategy {
-  public mutate(population: Population): void {
-    population.population.forEach((genotype) => {
-      genotype.genes.forEach((_, index) => {
-        if (Math.random() < population.populationSettings.mutationRate) {
-          genotype.genes[index] = Math.round(Math.random()) as Gene;
-        }
-      });
+  public mutate(child): Genotype {
+    const mutatedGenes = child.genes.map((gene) => {
+      if (Math.random() < 0.1) {
+        return gene === 0 ? 1 : 0;
+      }
+
+      return gene;
     });
+    child.setGenes(mutatedGenes);
+
+    return child;
   }
 }
