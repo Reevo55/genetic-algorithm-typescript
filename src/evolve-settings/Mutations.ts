@@ -5,7 +5,7 @@ export interface IMutationStrategy {
 }
 
 export class RandomMutationStrategy implements IMutationStrategy {
-  public mutate(child): Genotype {
+  public mutate(child: Genotype): Genotype {
     const mutatedGenes = child.genes.map((gene) => {
       if (Math.random() < 0.1) {
         return gene === 0 ? 1 : 0;
