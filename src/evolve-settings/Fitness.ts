@@ -16,3 +16,25 @@ export class BasicFitness implements IFitnessStrategy {
     return value;
   }
 }
+
+export class LeftoverGenesMutateFitness implements IFitnessStrategy {
+  calculate(gene: Genotype): number {
+    const maxWeight = gene.settings.maxWeightCapacity;
+    let sumOfValues = 0;
+    let sumOfWeights = 0;
+
+    for (let i = 0; i < gene.genes.length; i++) {
+      const geneWeight = gene.elements[i].weight * gene.genes[i];
+      const geneValue = gene.elements[i].value * gene.genes[i];
+
+      if (sumOfWeights + geneWeight <= maxWeight) {
+        sumOfWeights += geneWeight;
+        sumOfValues += geneValue;
+      } else {
+        gene.genes[i] = 0;
+      }
+    }
+
+    return sumOfValues;
+  }
+}

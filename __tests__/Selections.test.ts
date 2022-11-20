@@ -8,10 +8,11 @@ import {
 
 describe('Population class', () => {
   const populationSettings: IPopulationSettings = {
-    populationSize: 10,
-    mutationRate: 0.1,
-    crossoverRate: 0.7,
+    populationSize: 100,
     elitism: true,
+    mutationRate: 0.01,
+    crossoverRate: 0.9,
+    inversionRate: 0.01,
     tournamentSize: 5,
   };
 
