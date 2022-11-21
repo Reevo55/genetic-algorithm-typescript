@@ -1,4 +1,7 @@
-import { BasicFitness } from '../src/evolve-settings/Fitness.js';
+import {
+  BasicFitness,
+  LeftoverGenesMutateFitness,
+} from '../src/evolve-settings/Fitness.js';
 import { Genotype } from '../src/Genotype.js';
 
 describe('fitness functions', () => {
@@ -34,5 +37,16 @@ describe('fitness functions', () => {
     const result = fitness.calculate(genotype1);
 
     expect(result).toEqual(0);
+  });
+
+  it('should test leftover swap fitness strategy', () => {
+    const fitness = new LeftoverGenesMutateFitness();
+    genotype1.setGenes([1, 1, 1, 1, 1]);
+    genotype1.settings.maxWeightCapacity = 11;
+
+    const result = fitness.calculate(genotype1);
+
+    expect(result).toEqual(25);
+    expect(genotype1.genes).toEqual([1, 1, 1, 0, 0]);
   });
 });

@@ -1,4 +1,7 @@
-import { OnePointCrossoverStrategy } from '../src/evolve-settings/Crossovers.js';
+import {
+  OnePointCrossoverStrategy,
+  TwoPointCrossoverStrategy,
+} from '../src/evolve-settings/Crossovers.js';
 import { Genotype } from '../src/Genotype.js';
 
 describe('crossover functions', () => {
@@ -37,5 +40,14 @@ describe('crossover functions', () => {
 
     expect(child1Result.genes).toEqual([1, 1, 1, 0, 1]);
     expect(child2Result.genes).toEqual([0, 0, 0, 1, 0]);
+  });
+
+  it('should test two point crossover function', () => {
+    const crossover = new TwoPointCrossoverStrategy();
+
+    const [child1Result, child2Result] = crossover.crossover(parent1, parent2);
+
+    expect(child1Result.genes).toHaveLength(5);
+    expect(child2Result.genes).toHaveLength(5);
   });
 });

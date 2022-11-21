@@ -25,3 +25,22 @@ export class RouletteSelectionStrategy implements ISelectionStrategy {
     return population.population[0];
   }
 }
+
+export class TournamentSelectionStrategy implements ISelectionStrategy {
+  public select(population: Population): Genotype {
+    const tournament = Array.from(
+      { length: population.populationSettings.tournamentSize },
+      () => {
+        const randomIndex = Math.floor(
+          Math.random() * population.population.length,
+        );
+
+        return population.population[randomIndex];
+      },
+    );
+
+    return tournament.reduce((prev, current) =>
+      prev.calculateFitness() > current.calculateFitness() ? prev : current,
+    );
+  }
+}

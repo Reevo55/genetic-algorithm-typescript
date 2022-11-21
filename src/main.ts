@@ -1,8 +1,21 @@
-import { OnePointCrossoverStrategy } from './evolve-settings/Crossovers.js';
-import { BasicFitness, IFitnessStrategy } from './evolve-settings/Fitness.js';
+import {
+  OnePointCrossoverStrategy,
+  TwoPointCrossoverStrategy,
+} from './evolve-settings/Crossovers.js';
+import {
+  BasicFitness,
+  IFitnessStrategy,
+  LeftoverGenesMutateFitness,
+} from './evolve-settings/Fitness.js';
 import { RandomInversionStrategy } from './evolve-settings/Inversion.js';
-import { RandomMutationStrategy } from './evolve-settings/Mutations.js';
-import { RouletteSelectionStrategy } from './evolve-settings/Selections.js';
+import {
+  RandomMutationStrategy,
+  RandomSwapMutationStrategy,
+} from './evolve-settings/Mutations.js';
+import {
+  RouletteSelectionStrategy,
+  TournamentSelectionStrategy,
+} from './evolve-settings/Selections.js';
 import { Genotype } from './Genotype.js';
 import {
   IEvolveSettings,
@@ -16,7 +29,7 @@ const globalPopulationSettings: IPopulationSettings = {
   populationSize: 200,
   elitism: true,
   mutationRate: 0.01,
-  crossoverRate: 0.9,
+  crossoverRate: 0.01,
   inversionRate: 0.01,
   tournamentSize: 5,
 };
@@ -26,8 +39,8 @@ const globalEvolveSettings: IEvolveSettings = {
   crossover: new OnePointCrossoverStrategy(),
   mutation: new RandomMutationStrategy(),
   fitness: new BasicFitness(),
-  inversion: new RandomInversionStrategy();
-  maxGenerations: 100,
+  inversion: new RandomInversionStrategy(),
+  maxGenerations: 50,
 };
 
 async function getBenchmark(datasetNumber: number): Promise<IProblemSettings> {
@@ -99,24 +112,28 @@ function evolvePopulation({
   return { time, fittest };
 }
 
-async function researchMaxGenerations(problemSettings, howManyTimes) {
-  const maxGenerations = [10, 50, 100, 200, 500];
+async function researchEvolveAttribute(
+  attributes,
+  attributeName,
+  problemSettings,
+  howManyTimes,
+) {
   const results = [];
 
-  maxGenerations.forEach((maxGenerations) => {
+  attributes.forEach((value) => {
     const { averageTime, averageFitness, averageCapacity } =
       averageFromEvolvePopulationNtimes(howManyTimes, {
         populationSettings: globalPopulationSettings,
         problemSettings: problemSettings,
         evolveSettings: {
           ...globalEvolveSettings,
-          maxGenerations,
+          [attributeName]: value,
         },
         fitnessStrategy: new BasicFitness(),
       });
 
     results.push({
-      maxGenerations,
+      [attributeName]: value,
       averageTime,
       averageFitness,
       averageCapacity,
@@ -126,14 +143,18 @@ async function researchMaxGenerations(problemSettings, howManyTimes) {
   return results;
 }
 
-async function researchPopulationSize(problemSettings, howManyTimes) {
-  const populationSizes = [10, 50, 100, 200, 500];
+async function researchPopulationAttribute(
+  attributes,
+  attributeName,
+  problemSettings,
+  howManyTimes,
+) {
   const results = [];
 
-  populationSizes.forEach((populationSize) => {
+  attributes.forEach((value) => {
     const populationSettings: IPopulationSettings = {
       ...globalPopulationSettings,
-      populationSize,
+      [attributeName]: value,
     };
 
     const { averageTime, averageFitness, averageCapacity } =
@@ -145,7 +166,7 @@ async function researchPopulationSize(problemSettings, howManyTimes) {
       });
 
     results.push({
-      populationSize,
+      [attributeName]: value,
       averageTime,
       averageFitness,
       averageCapacity,
@@ -156,22 +177,135 @@ async function researchPopulationSize(problemSettings, howManyTimes) {
 }
 
 async function main(): Promise<void> {
-  const problemSettings = await getBenchmark(0);
+  const maxGenerations = [10, 50, 100, 200, 500];
+  const populationSizes = [10, 50, 100, 200, 500];
+  const mutationRates = [0.01, 0.05, 0.1, 0.2, 0.5];
+  const crossoverRates = [0.01, 0.05, 0.1, 0.2, 0.5];
+  const inversionRates = [0.01, 0.05, 0.1, 0.2, 0.5];
+  const elitism = [true, false];
+
+  const problemSettings = await getBenchmark(5);
   const howManyTimes = 5;
 
-  const populationResults = await researchPopulationSize(
+  const generationsResults = await researchEvolveAttribute(
+    maxGenerations,
+    'maxGenerations',
     problemSettings,
     howManyTimes,
   );
 
+  const populationResults = await researchPopulationAttribute(
+    populationSizes,
+    'populationSize',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const mutationResults = await researchPopulationAttribute(
+    mutationRates,
+    'mutationRate',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const crossoverResults = await researchPopulationAttribute(
+    crossoverRates,
+    'crossoverRate',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const inversionResults = await researchPopulationAttribute(
+    inversionRates,
+    'inversionRate',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const elitismResults = await researchPopulationAttribute(
+    elitism,
+    'elitism',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const fitnessStrategies = [
+    new BasicFitness(),
+    new LeftoverGenesMutateFitness(),
+  ];
+
+  const crossoverStrategies = [
+    new OnePointCrossoverStrategy(),
+    new TwoPointCrossoverStrategy(),
+  ];
+
+  const mutationStrategies = [
+    new RandomMutationStrategy(),
+    new RandomSwapMutationStrategy(),
+  ];
+
+  const selectionStrategies = [
+    new RouletteSelectionStrategy(),
+    new TournamentSelectionStrategy(),
+  ];
+
+  const fitnessResults = await researchEvolveAttribute(
+    fitnessStrategies,
+    'fitness',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const crossoverStrategyResults = await researchEvolveAttribute(
+    crossoverStrategies,
+    'crossover',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const mutationStrategyResults = await researchEvolveAttribute(
+    mutationStrategies,
+    'mutation',
+    problemSettings,
+    howManyTimes,
+  );
+
+  const selectionResults = await researchEvolveAttribute(
+    selectionStrategies,
+    'selection',
+    problemSettings,
+    howManyTimes,
+  );
+
+  console.log('==== POULATION RESULTS =====');
   console.table(populationResults);
 
-  const generationsResults = await researchMaxGenerations(
-    problemSettings,
-    howManyTimes,
-  );
-
+  console.log('==== GENERATIONS RESULTS =====');
   console.table(generationsResults);
+
+  console.log('==== MUTATIONS RESULTS =====');
+  console.table(mutationResults);
+
+  console.log('==== CROSSOVER RESULTS =====');
+  console.table(crossoverResults);
+
+  console.log('==== INVERSION RESULTS =====');
+  console.table(inversionResults);
+
+  console.log('==== ELITISM RESULTS =====');
+  console.table(elitismResults);
+
+  console.log('==== FITNESS RESULTS =====');
+  console.table(fitnessResults);
+
+  console.log('==== CROSSOVER RESULTS =====');
+  console.table(crossoverStrategyResults);
+
+  console.log('==== MUTATION RESULTS =====');
+  console.table(mutationStrategyResults);
+
+  console.log('==== SELECTION RESULTS =====');
+  console.table(selectionResults);
 }
 
 main();

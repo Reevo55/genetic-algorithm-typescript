@@ -1,4 +1,7 @@
-import { RandomMutationStrategy } from '../src/evolve-settings/Mutations.js';
+import {
+  RandomMutationStrategy,
+  RandomSwapMutationStrategy,
+} from '../src/evolve-settings/Mutations.js';
 import { Genotype } from '../src/Genotype.js';
 
 describe('mutations functions', () => {
@@ -24,5 +27,15 @@ describe('mutations functions', () => {
     const afterMutationChild = mutation.mutate(genotype1);
 
     expect(afterMutationChild.genes.length).toEqual(5);
+  });
+
+  it('should test random swap mutation', () => {
+    const mutation = new RandomSwapMutationStrategy();
+
+    genotype1.setGenes([1, 1, 0, 1, 0]);
+
+    const afterMutationChild = mutation.mutate(genotype1);
+
+    expect(afterMutationChild.genes).toHaveLength(5);
   });
 });
