@@ -29,10 +29,10 @@ export async function readDataset(datasetNumber: number): Promise<IDataset> {
   const capacity = parseInt(capacityFile);
 
   const solution = solutionFile
-    .split('\r')
+    .split(/\r?\n/)
     .map((solution) => parseInt(solution));
-  const profits = profitsFile.split('\r').map((profit) => parseInt(profit));
-  const weights = weightsFile.split('\r').map((weight) => parseInt(weight));
+  const profits = profitsFile.split(/\r?\n/).map((profit) => parseInt(profit));
+  const weights = weightsFile.split(/\r?\n/).map((weight) => parseInt(weight));
 
   return { capacity, profits, solution, weights };
 }

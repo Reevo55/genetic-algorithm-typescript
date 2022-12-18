@@ -26,10 +26,10 @@ import {
 import { readDataset, getDatasetToElements } from './utils/fileReader.js';
 
 const globalPopulationSettings: IPopulationSettings = {
-  populationSize: 200,
-  elitism: true,
+  populationSize: 100,
+  elitism: false,
   mutationRate: 0.01,
-  crossoverRate: 0.01,
+  crossoverRate: 0.9,
   inversionRate: 0.01,
   tournamentSize: 5,
 };
@@ -112,7 +112,7 @@ function evolvePopulation({
   return { time, fittest };
 }
 
-async function researchEvolveAttribute(
+function researchEvolveAttribute(
   attributes,
   attributeName,
   problemSettings,
@@ -143,7 +143,7 @@ async function researchEvolveAttribute(
   return results;
 }
 
-async function researchPopulationAttribute(
+function researchPopulationAttribute(
   attributes,
   attributeName,
   problemSettings,
@@ -180,49 +180,49 @@ async function main(): Promise<void> {
   const maxGenerations = [10, 50, 100, 200, 500];
   const populationSizes = [10, 50, 100, 200, 500];
   const mutationRates = [0.01, 0.05, 0.1, 0.2, 0.5];
-  const crossoverRates = [0.01, 0.05, 0.1, 0.2, 0.5];
+  const crossoverRates = [0.01, 0.05, 0.1, 0.2, 0.5, 0.9];
   const inversionRates = [0.01, 0.05, 0.1, 0.2, 0.5];
   const elitism = [true, false];
 
-  const problemSettings = await getBenchmark(5);
-  const howManyTimes = 5;
+  const problemSettings = await getBenchmark(7);
+  const howManyTimes = 10;
 
-  const generationsResults = await researchEvolveAttribute(
+  const generationsResults = researchEvolveAttribute(
     maxGenerations,
     'maxGenerations',
     problemSettings,
     howManyTimes,
   );
 
-  const populationResults = await researchPopulationAttribute(
+  const populationResults = researchPopulationAttribute(
     populationSizes,
     'populationSize',
     problemSettings,
     howManyTimes,
   );
 
-  const mutationResults = await researchPopulationAttribute(
+  const mutationResults = researchPopulationAttribute(
     mutationRates,
     'mutationRate',
     problemSettings,
     howManyTimes,
   );
 
-  const crossoverResults = await researchPopulationAttribute(
+  const crossoverResults = researchPopulationAttribute(
     crossoverRates,
     'crossoverRate',
     problemSettings,
     howManyTimes,
   );
 
-  const inversionResults = await researchPopulationAttribute(
+  const inversionResults = researchPopulationAttribute(
     inversionRates,
     'inversionRate',
     problemSettings,
     howManyTimes,
   );
 
-  const elitismResults = await researchPopulationAttribute(
+  const elitismResults = researchPopulationAttribute(
     elitism,
     'elitism',
     problemSettings,
@@ -249,28 +249,28 @@ async function main(): Promise<void> {
     new TournamentSelectionStrategy(),
   ];
 
-  const fitnessResults = await researchEvolveAttribute(
+  const fitnessResults = researchEvolveAttribute(
     fitnessStrategies,
     'fitness',
     problemSettings,
     howManyTimes,
   );
 
-  const crossoverStrategyResults = await researchEvolveAttribute(
+  const crossoverStrategyResults = researchEvolveAttribute(
     crossoverStrategies,
     'crossover',
     problemSettings,
     howManyTimes,
   );
 
-  const mutationStrategyResults = await researchEvolveAttribute(
+  const mutationStrategyResults = researchEvolveAttribute(
     mutationStrategies,
     'mutation',
     problemSettings,
     howManyTimes,
   );
 
-  const selectionResults = await researchEvolveAttribute(
+  const selectionResults = researchEvolveAttribute(
     selectionStrategies,
     'selection',
     problemSettings,
@@ -308,4 +308,4 @@ async function main(): Promise<void> {
   console.table(selectionResults);
 }
 
-main();
+await main();

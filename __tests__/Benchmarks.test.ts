@@ -50,7 +50,7 @@ async function populateBenchmarks(howMany: number): Promise<IBenchmark[]> {
   return benchmarks;
 }
 
-const howMany = 7;
+const howMany = 1;
 
 describe('Benchmarks', () => {
   let populationSettings: IPopulationSettings;
@@ -128,3 +128,5 @@ describe('Benchmarks', () => {
     });
   });
 });
+
+
