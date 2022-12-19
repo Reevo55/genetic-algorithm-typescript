@@ -12,6 +12,7 @@ export default class BeeOptimization {
   private currentIteration: number;
   private bestSolution: number[];
   private bestFitness: number;
+  private elitism: boolean;
 
   constructor(
     items: IElement[],
@@ -21,6 +22,7 @@ export default class BeeOptimization {
     numOnlookerBees: number,
     numScoutBees: number,
     maxIterations: number,
+    elistism: boolean = true,
   ) {
     this.items = items;
     this.maxWeight = maxWeight;
@@ -32,6 +34,7 @@ export default class BeeOptimization {
     this.currentIteration = 0;
     this.bestSolution = new Array(items.length).fill(0);
     this.bestFitness = 0;
+    this.elitism = elistism;
   }
 
   public calculateFitness(solution: number[]): number {
@@ -95,14 +98,20 @@ export default class BeeOptimization {
   }
 
   private runIteration(): void {
-    // Elite bees
-    for (let i = 0; i < this.numEliteBees; i++) {
-      const neighbor = this.generateNeighbor(this.bestSolution);
-      const chosen = this.selectNeighbor(this.bestSolution, neighbor);
-      this.updateBestSolution(chosen, this.calculateFitness(chosen));
+    // Elitarne pszczółki, które sprawdzają czy w sąsiedztwie są lepsze rozwiązania
+
+    if (this.elitism) {
+      for (let i = 0; i < this.numEliteBees; i++) {
+        const neighbor = this.generateNeighbor(this.bestSolution);
+        const chosen = this.selectNeighbor(this.bestSolution, neighbor);
+        this.updateBestSolution(chosen, this.calculateFitness(chosen));
+      }
     }
 
-    // Onlooker bees
+    // Patrzące pszczeółki, generowane są randomowe rozwiązania i wybierane jest najlepsze
+    // z nich, a następnie sprawdzane są sąsiedztwa tego rozwiązania
+    // szansa wyboru jest proporcjonalna do fitnessu
+    // i jeszcze sprawdzam z sąsiedztwem czy nie ma lepszego rozwiązania
     const probabilites = new Array(this.numBees).fill(0);
     for (let i = 0; i < this.numOnlookerBees; i++) {
       let totalFitness = 0;
@@ -131,7 +140,7 @@ export default class BeeOptimization {
       this.updateBestSolution(chosen, this.calculateFitness(chosen));
     }
 
-    // Scout bees
+    // Skauci, generują nowe rozwiązania i sprawdzają czy są lepsze od najlepszego
     for (let i = 0; i < this.numScoutBees; i++) {
       const scout = this.generateScout();
       const scoutFitness = this.calculateFitness(scout);

@@ -139,6 +139,7 @@ function avarageFromBoaNTimes(
     numOnlookerBees,
     numScoutBees,
     maxIterations,
+    elitism,
   } = boaOptions;
 
   for (let i = 0; i < times; i++) {
@@ -150,6 +151,7 @@ function avarageFromBoaNTimes(
       numOnlookerBees,
       numScoutBees,
       maxIterations,
+      elitism,
     );
 
     const { time, solution } = boa.optimize();
@@ -179,16 +181,31 @@ const runEveryBenchmark = async (boa_options) => {
   }
 };
 
+const logDivider = (text) => {
+  console.log(
+    '================================================================================================================================',
+  );
+  console.log(
+    `=====================================================           ${text}             ====================================================`,
+  );
+  console.log(
+    '================================================================================================================================',
+  );
+};
+
 async function main(): Promise<void> {
+  logDivider('WITH ELITISM');
+
   const BOA_OPTIONS_SMALL = {
     numBees: 10,
     numEliteBees: 2,
     numOnlookerBees: 4,
     numScoutBees: 4,
     maxIterations: 100,
+    elitism: true,
   };
-
-  await runEveryBenchmark(boa_options);
+  logDivider('SMALL');
+  await runEveryBenchmark(BOA_OPTIONS_SMALL);
 
   const BOA_OPTIONS_MEDIUM = {
     numBees: 20,
@@ -196,9 +213,11 @@ async function main(): Promise<void> {
     numOnlookerBees: 8,
     numScoutBees: 8,
     maxIterations: 100,
+    elitism: true,
   };
 
-  await runEveryBenchmark(boa_options);
+  logDivider('MEDIUM');
+  await runEveryBenchmark(BOA_OPTIONS_MEDIUM);
 
   const BOA_OPTIONS_LARGE = {
     numBees: 50,
@@ -206,9 +225,46 @@ async function main(): Promise<void> {
     numOnlookerBees: 20,
     numScoutBees: 20,
     maxIterations: 100,
+    elitism: true,
+  };
+  logDivider('LARGE');
+  await runEveryBenchmark(BOA_OPTIONS_LARGE);
+
+  logDivider('WITHOUT ELITISM');
+
+  const BOA_OPTIONS_SMALL_WITHOUT_ELITISM = {
+    numBees: 10,
+    numEliteBees: 2,
+    numOnlookerBees: 4,
+    numScoutBees: 4,
+    maxIterations: 100,
+    elitism: false,
+  };
+  logDivider('SMALL');
+  await runEveryBenchmark(BOA_OPTIONS_SMALL_WITHOUT_ELITISM);
+
+  const BOA_OPTIONS_MEDIUM_WITHOUT_ELITISM = {
+    numBees: 20,
+    numEliteBees: 4,
+    numOnlookerBees: 8,
+    numScoutBees: 8,
+    maxIterations: 100,
+    elitism: false,
   };
 
-  await runEveryBenchmark(boa_options);
+  logDivider('MEDIUM');
+  await runEveryBenchmark(BOA_OPTIONS_MEDIUM_WITHOUT_ELITISM);
+
+  const BOA_OPTIONS_LARGE_WITHOUT_ELITISM = {
+    numBees: 50,
+    numEliteBees: 10,
+    numOnlookerBees: 20,
+    numScoutBees: 20,
+    maxIterations: 100,
+    elitism: false,
+  };
+  logDivider('LARGE');
+  await runEveryBenchmark(BOA_OPTIONS_LARGE_WITHOUT_ELITISM);
 }
 
 await main();
