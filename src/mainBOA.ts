@@ -17,7 +17,7 @@ import {
 import { readDataset, getDatasetToElements } from './utils/fileReader.js';
 
 const globalPopulationSettings: IPopulationSettings = {
-  populationSize: 200,
+  populationSize: 50,
   elitism: true,
   mutationRate: 0.01,
   crossoverRate: 0.9,
@@ -196,6 +196,7 @@ const logDivider = (text) => {
 async function main(): Promise<void> {
   logDivider('WITH ELITISM');
 
+  globalPopulationSettings.populationSize = 10;
   const BOA_OPTIONS_SMALL = {
     numBees: 10,
     numEliteBees: 2,
@@ -215,6 +216,7 @@ async function main(): Promise<void> {
     maxIterations: 100,
     elitism: true,
   };
+  globalPopulationSettings.populationSize = 20;
 
   logDivider('MEDIUM');
   await runEveryBenchmark(BOA_OPTIONS_MEDIUM);
@@ -227,6 +229,8 @@ async function main(): Promise<void> {
     maxIterations: 100,
     elitism: true,
   };
+  globalPopulationSettings.populationSize = 50;
+
   logDivider('LARGE');
   await runEveryBenchmark(BOA_OPTIONS_LARGE);
 
@@ -240,6 +244,8 @@ async function main(): Promise<void> {
     maxIterations: 100,
     elitism: false,
   };
+  globalPopulationSettings.populationSize = 10;
+
   logDivider('SMALL');
   await runEveryBenchmark(BOA_OPTIONS_SMALL_WITHOUT_ELITISM);
 
@@ -252,6 +258,8 @@ async function main(): Promise<void> {
     elitism: false,
   };
 
+  globalPopulationSettings.populationSize = 20;
+
   logDivider('MEDIUM');
   await runEveryBenchmark(BOA_OPTIONS_MEDIUM_WITHOUT_ELITISM);
 
@@ -263,6 +271,8 @@ async function main(): Promise<void> {
     maxIterations: 100,
     elitism: false,
   };
+  globalPopulationSettings.populationSize = 50;
+
   logDivider('LARGE');
   await runEveryBenchmark(BOA_OPTIONS_LARGE_WITHOUT_ELITISM);
 }
